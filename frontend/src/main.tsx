@@ -11,6 +11,8 @@ import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 
+import { UserProvider } from './context/UserContext';
+
 import App from './App.tsx';
 import theme from './theme.tsx';
 import './index.css';
@@ -27,11 +29,13 @@ createRoot(document.getElementById('root')!).render(
     <Router>
       <QueryClientProvider client={queryClient}>
         <CacheProvider value={cacheRtl}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </ThemeProvider>
+          <UserProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <App />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ThemeProvider>
+          </UserProvider>
         </CacheProvider>
       </QueryClientProvider>
     </Router>
