@@ -1,8 +1,8 @@
 import { OAuth2Client } from 'google-auth-library';
 
-const CLIENT_ID = process.env.CLIENT_ID as string;
-const CLIENT_SECRET = process.env.CLIENT_SECRET as string;
-const REDIRECT_URI = process.env.REDIRECT_URI as string;
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
+const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
+const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI as string;
 
 if (!CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
   throw new Error('Missing required environment variables for OAuth2 client');
