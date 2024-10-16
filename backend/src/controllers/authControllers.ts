@@ -54,7 +54,7 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
       email,
       name,
       picture,
-      isAdmin: true,
+      role: user.role,
     };
 
     const jwtToken = jwt.sign(jwtPayload, jwtSecret, { expiresIn: '7d' });
