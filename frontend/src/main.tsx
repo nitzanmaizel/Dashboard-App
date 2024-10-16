@@ -11,10 +11,10 @@ import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 
-import { UserProvider } from './context/UserContext';
+import { UserProvider } from '@/context/UserContext';
 
 import App from './App.tsx';
-import theme from './theme.tsx';
+import theme from '@/theme.tsx';
 import './index.css';
 
 const queryClient = new QueryClient();

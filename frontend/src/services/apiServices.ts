@@ -1,5 +1,5 @@
-import { getAccessToken } from '../tokenManager';
-import { API_FULL_URL } from '../types/ApiTypes';
+import { getAccessToken } from '@/tokenManager';
+import { API_FULL_URL } from '@/types/ApiTypes';
 
 export type FetchAPIMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type FetchAPIResponseType = 'json' | 'blob' | 'text';

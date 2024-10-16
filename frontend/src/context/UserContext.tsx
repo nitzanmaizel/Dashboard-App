@@ -1,10 +1,10 @@
 import React, { createContext, useState, ReactNode, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getAccessToken, setAccessToken } from '../tokenManager';
-import { fetchAPI } from '../services/apiServices';
-import { API_LOGIN, API_USER } from '../types/ApiTypes';
-import { IUser, UserContextType } from '../types/UserTypes';
+import { getAccessToken, setAccessToken } from '@/tokenManager';
+import { fetchAPI } from '@/services/apiServices';
+import { API_LOGIN, API_USER } from '@/types/ApiTypes';
+import { IUser, UserContextType } from '@/types/UserTypes';
 
 export const UserContext = createContext<UserContextType | undefined>(undefined);
 

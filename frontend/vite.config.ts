@@ -44,6 +44,11 @@ const muteWarningsPlugin = (warningsToIgnore: string[][]): Plugin => {
 
 export default defineConfig({
   plugins: [react(), muteWarningsPlugin(warningsToIgnore)],
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
   server: {
     port: 3000,
     proxy: {
