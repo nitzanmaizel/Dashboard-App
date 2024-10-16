@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Avatar, Box } from '@mui/material';
 
-import Sidebar from './Sidebar';
+import Sidebar from '@/components/Layout/Sidebar';
 import { useUser } from '@/hooks/useUser';
 
 const Navbar: React.FC = () => {
