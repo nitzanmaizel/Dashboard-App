@@ -1,16 +1,14 @@
 import React from 'react';
-import { Typography } from '@mui/material';
-
-import PageWrapper from '@/components/Layout/PageWrapper';
-import { useUser } from '@/hooks/useUser';
+import { Routes, Route } from 'react-router-dom';
+import HomePage from '@/pages/HomePage';
+import SheetPage from '@/pages/SheetPage';
 
 const App: React.FC = () => {
-  const { userInfo } = useUser();
-
   return (
-    <PageWrapper>
-      <Typography variant='h1'>Hello, {userInfo?.name}</Typography>
-    </PageWrapper>
+    <Routes>
+      <Route path='/' element={<HomePage />} />
+      <Route path='/sheet/:id' element={<SheetPage />} />
+    </Routes>
   );
 };
 

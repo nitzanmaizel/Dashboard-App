@@ -1,8 +1,8 @@
 import express from 'express';
-import { getGSheetByIdController } from '../controllers/sheetsController';
+import { getFullSheetDataController } from '../controllers/sheetsController';
 
 const router = express.Router();
 
-router.get('/:id', getGSheetByIdController);
+router.get('/:sheetId', getFullSheetDataController);
 
 export default router;
