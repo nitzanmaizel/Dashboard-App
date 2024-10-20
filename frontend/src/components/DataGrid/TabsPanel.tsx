@@ -17,6 +17,8 @@ interface TabsPanelProps {
   setValidationErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
   handleSave: () => void;
   saveStatus: 'idle' | 'saving' | 'success' | 'error';
+  allowedStartDate: Date;
+  allowedEndDate: Date;
 }
 
 const TabsPanel: React.FC<TabsPanelProps> = (props) => {
@@ -32,6 +34,8 @@ const TabsPanel: React.FC<TabsPanelProps> = (props) => {
     setValidationErrors,
     handleSave,
     saveStatus,
+    allowedStartDate,
+    allowedEndDate,
   } = props;
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -41,8 +45,8 @@ const TabsPanel: React.FC<TabsPanelProps> = (props) => {
   return (
     <Box>
       <Tabs value={activeTab} onChange={handleTabChange}>
-        <Tab label={'מידע אישי'} />
-        <Tab label={'ימ"מים'} />
+        <Tab label='Details' />
+        <Tab label='Tracking' />
       </Tabs>
 
       {activeTab === 0 && (
@@ -66,6 +70,8 @@ const TabsPanel: React.FC<TabsPanelProps> = (props) => {
             setTrackingValues={setTrackingValues}
             validationErrors={validationErrors}
             setValidationErrors={setValidationErrors}
+            allowedStartDate={allowedStartDate}
+            allowedEndDate={allowedEndDate}
           />
           {saveStatus === 'success' && (
             <Typography variant='body2' color='success.main' style={{ marginTop: '8px' }}>

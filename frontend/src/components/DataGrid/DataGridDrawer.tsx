@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Drawer, Typography, styled } from '@mui/material';
 import { Row } from '@/types/DataGridTypes';
 import TabsPanel from './TabsPanel';
+import { parse, subDays, addDays, startOfDay, isWithinInterval } from 'date-fns';
 
 interface DataGridDrawerProps {
   open: boolean;
@@ -21,7 +22,6 @@ const DrawerContent = styled('div')(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(2),
   overflowY: 'auto',
-  height: '70vh',
 }));
 
 const DataGridDrawer: React.FC<DataGridDrawerProps> = ({
@@ -33,18 +33,31 @@ const DataGridDrawer: React.FC<DataGridDrawerProps> = ({
   trackingStartDate,
   trackingValues,
   setTrackingValues,
+  // updateRowData,
 }) => {
   const [validationErrors, setValidationErrors] = useState<{
     [key: string]: string;
   }>({});
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
 
+  // Calculate allowed date range
+  const currentDate = startOfDay(new Date());
+  const allowedStartDate = subDays(currentDate, 7);
+  const allowedEndDate = addDays(currentDate, 7);
+
   const handleSave = async () => {
     // Validation
     const errors: { [key: string]: string } = {};
-    Object.entries(trackingValues).forEach(([date, value]) => {
-      if (!value) {
-        errors[date] = 'Please select a value';
+
+    Object.entries(trackingValues).forEach(([dateString, value]) => {
+      const date = parse(dateString, 'dd/MM/yyyy', new Date());
+      const isEditable = isWithinInterval(date, {
+        start: allowedStartDate,
+        end: allowedEndDate,
+      });
+
+      if (isEditable && !value) {
+        errors[dateString] = 'Please select a value';
       }
     });
 
@@ -64,6 +77,7 @@ const DataGridDrawer: React.FC<DataGridDrawerProps> = ({
         ...selectedRow,
         ...trackingValues,
       };
+
       console.log({ updatedRow });
 
       // updateRowData(updatedRow as Row);
@@ -99,6 +113,8 @@ const DataGridDrawer: React.FC<DataGridDrawerProps> = ({
             setValidationErrors={setValidationErrors}
             handleSave={handleSave}
             saveStatus={saveStatus}
+            allowedStartDate={allowedStartDate}
+            allowedEndDate={allowedEndDate}
           />
         ) : (
           <Typography>No data available</Typography>
