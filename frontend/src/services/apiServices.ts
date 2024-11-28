@@ -4,20 +4,23 @@ import { API_FULL_URL } from '@/types/ApiTypes';
 export type FetchAPIMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type FetchAPIResponseType = 'json' | 'blob' | 'text';
 
-interface FetchAPIOptions {
+interface FetchAPIOptions<B = undefined> {
   method?: FetchAPIMethod;
   headers?: HeadersInit;
-  body?: Record<string, unknown> | FormData | null;
+  body?: B;
   queryParams?: Record<string, string | number>;
   signal?: AbortSignal;
   responseType?: FetchAPIResponseType;
 }
 
-export async function fetchAPI<T>(endpoint: string, options: FetchAPIOptions = {}): Promise<T> {
+export async function fetchAPI<T, B = undefined>(
+  endpoint: string,
+  options: FetchAPIOptions<B> = {}
+): Promise<T> {
   const {
     method = 'GET',
     headers = {},
-    body = null,
+    body,
     queryParams = {},
     signal,
     responseType = 'json',
@@ -41,6 +44,7 @@ export async function fetchAPI<T>(endpoint: string, options: FetchAPIOptions = {
 
     fetchHeaders.set('Authorization', `Bearer ${accessToken}`);
 
+    // Merge custom headers
     if (headers instanceof Headers) {
       headers.forEach((value, key) => {
         fetchHeaders.set(key, value);
@@ -62,12 +66,16 @@ export async function fetchAPI<T>(endpoint: string, options: FetchAPIOptions = {
       credentials: 'include',
     };
 
-    if (body) {
+    if (body !== null && body !== undefined) {
       if (body instanceof FormData) {
         fetchOptions.body = body;
-      } else {
+      } else if (typeof body === 'string') {
+        fetchOptions.body = body;
+      } else if (typeof body === 'object') {
         fetchHeaders.set('Content-Type', 'application/json');
         fetchOptions.body = JSON.stringify(body);
+      } else {
+        throw new Error('Unsupported body type');
       }
     }
 

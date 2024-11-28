@@ -5,8 +5,10 @@ import { IconWrapperProps, mapTypeToIcon } from './mapTypeToIcon';
 const IconWrapper: React.FC<IconWrapperProps> = (props) => {
   const { type, isDark, isDisabled, sx, onClick, text, textSx, buttonSx, ...otherProps } = props;
 
+  const iconColor = otherProps.color;
+
   const iconSx = {
-    color: isDark ? '#333' : isDisabled ? '#999' : '#000',
+    color: iconColor ? iconColor : isDark ? '#333' : isDisabled ? '#999' : '#000',
     ...sx,
   };
 

@@ -1,8 +1,8 @@
 import { oAuth2Client } from '../config/oauth2Client';
-import User from '../models/UserModal';
+import AdminUserModal from '../models/AdminUserModal';
 
 export const refreshAccessToken = async (userId: string): Promise<void> => {
-  const user = await User.findById(userId);
+  const user = await AdminUserModal.findById(userId);
 
   if (!user || !user.refreshToken) {
     throw new Error('User not found or refresh token missing');

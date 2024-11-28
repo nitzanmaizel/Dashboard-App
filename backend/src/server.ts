@@ -6,7 +6,7 @@ import { OAuth2Client } from 'google-auth-library';
 import routes from './routes';
 import { connectDB, disconnectDB } from './config/MongoDB';
 import cors from './middleware/cors';
-import { IUser } from './types/UserTypes';
+import { IAdminUser } from './types/AdminUserTypes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,7 +19,7 @@ connectDB();
 
 declare module 'express' {
   interface Request {
-    user?: IUser;
+    user?: IAdminUser;
     oauth2Client?: OAuth2Client;
     accessToken?: string;
   }

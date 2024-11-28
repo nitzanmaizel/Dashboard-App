@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { google } from 'googleapis';
 import jwt from 'jsonwebtoken';
 
+import AdminUserModal from '../models/AdminUserModal';
 import { oAuth2Client, SCOPES } from '../config/oauth2Client';
-import User from '../models/UserModal';
-import { IUser } from '../types/UserTypes';
+import { IAdminUser } from '../types/AdminUserTypes';
 
 const jwtSecret = process.env.JWT_SECRET as string;
 const frontendUrl = process.env.FRONTEND_URL as string;
@@ -32,29 +32,36 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
     oAuth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({ auth: oAuth2Client, version: 'v2' });
-    const userInfo = await oauth2.userinfo.get();
+    const userInfoResponse = await oauth2.userinfo.get();
+    const userInfo = userInfoResponse.data;
 
-    const { email, name, picture } = userInfo.data as IUser;
+    const email = userInfo.email;
+    const firstName = userInfo.given_name || '';
 
-    const user = await User.findOne({ email });
+    const lastName = userInfo.family_name || '';
+    const picture = userInfo.picture || '';
 
-    if (!user || user.role !== 'admin') {
+    const adminUser = await AdminUserModal.findOne({ email });
+
+    if (!adminUser || adminUser.role !== 'admin') {
       res.redirect(`${frontendUrl}/admin/unauthorized`);
       return;
     }
 
-    user.accessToken = tokens.access_token!;
-    user.refreshToken = tokens.refresh_token || user.refreshToken;
-    user.tokenExpiryDate = tokens.expiry_date ? new Date(tokens.expiry_date) : undefined;
+    adminUser.picture = picture;
+    adminUser.accessToken = tokens.access_token!;
+    adminUser.refreshToken = tokens.refresh_token || adminUser.refreshToken;
+    adminUser.tokenExpiryDate = tokens.expiry_date ? new Date(tokens.expiry_date) : undefined;
 
-    await user.save();
+    await adminUser.save();
 
     const jwtPayload = {
-      userId: (user._id as string).toString(),
+      userId: adminUser.userId,
       email,
-      name,
+      firstName,
+      lastName,
       picture,
-      role: user.role,
+      role: adminUser.role,
     };
 
     const jwtToken = jwt.sign(jwtPayload, jwtSecret, { expiresIn: '7d' });
@@ -68,16 +75,18 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
 
 export const getProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = req.user;
+    const user = req.user as IAdminUser;
+
     if (!user) {
       res.status(401).send('User not authenticated');
       return;
     }
 
-    const { name, email, picture, role } = user;
-    res.json({ name, email, picture, role });
+    const { firstName, lastName, email, picture, role } = user;
+
+    res.json({ firstName, lastName, email, picture, role });
   } catch (error) {
-    console.error('Error fetching profile or files:', error);
+    console.error('Error fetching profile:', error);
     res.status(500).send('Failed to fetch profile');
   }
 };

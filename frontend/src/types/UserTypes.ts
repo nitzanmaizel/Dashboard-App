@@ -1,15 +1,31 @@
 export type UserRole = 'user' | 'admin';
 
 export interface IUser {
-  name: string;
+  firstName: string;
+  lastName: string;
   userId?: string;
   email: string;
   role: UserRole;
   picture?: string;
 }
 
+export interface UserData {
+  id: number;
+  _id: number;
+  lastName: string;
+  firstName: string;
+  personalNumber: string;
+  company: string;
+  section: string;
+  role: string;
+  status: string;
+  phone: string;
+  notes: string;
+  [key: string]: string | number;
+}
+
 export interface RIUsersType {
-  users: IUser[];
+  users: UserData[];
   limit: number;
   page: number;
   total: number;

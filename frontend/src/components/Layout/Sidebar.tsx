@@ -1,82 +1,63 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { Divider, Box, Drawer, Button } from '@mui/material';
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Typography, Drawer, Theme } from '@mui/material';
 
-import IconWrapper from '@/components/IconWrapper/IconWrapper';
-import { useUser } from '@/hooks/useUser';
+import SidebarList from '../Lists/SideBarList';
+import LogoutButton from '../Buttons/LogoutButton';
+import { Flex, FlexCenter, FlexColumn } from '@/styles/Flex';
+import styled from '@emotion/styled';
+import theme from '@/theme';
 
-const Sidebar: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
-  const { userInfo, login, logout } = useUser();
+interface SidebarProps {
+  drawerWidth: number;
+  open: boolean;
+}
 
-  const navigate = useNavigate();
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-
-  const DrawerList = (
-    <Box role='presentation' onClick={toggleDrawer(false)}>
-      <List>
-        {SidebarList.map(({ id, text, icon, link }) => (
-          <ListItem key={id} disablePadding sx={{ margin: 0 }}>
-            <ListItemButton onClick={() => navigate(link)}>
-              <ListItemIcon sx={{ justifyContent: 'center' }}>
-                <IconWrapper type={icon} />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-        <Divider />
-        <ListItem key='logout' disablePadding>
-          <ListItemButton onClick={logout}>
-            <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <IconWrapper type='logout' />
-            </ListItemIcon>
-            <ListItemText primary='התנתקות' />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
-  );
-
-  const LoginDrawer = (
-    <Box sx={{ width: 250 }} role='presentation' onClick={toggleDrawer(false)}>
-      <List>
-        <ListItem key='login' disablePadding>
-          <ListItemButton onClick={login}>
-            <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <IconWrapper type='login' />
-            </ListItemIcon>
-            <ListItemText primary='התחברות' />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
-  );
-
+const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, open }) => {
   return (
-    <React.Fragment>
-      <Button onClick={toggleDrawer(true)}>
-        <IconWrapper type='menu' fontSize='large' sx={{ color: '#fff' }} />
-      </Button>
-      <Drawer anchor='left' open={open} onClose={toggleDrawer(false)}>
-        {userInfo ? DrawerList : LoginDrawer}
-      </Drawer>
-    </React.Fragment>
+    <DrawerContainer variant='permanent' theme={theme} drawerWidth={drawerWidth}>
+      <FlexColumn overflow={'hidden'}>
+        <Flex minHeight={'70px'} alignItems={'end'} p={open ? 2 : 0}>
+          <Box component='img' sx={{ height: 50 }} alt='Logo' src='/assets/logo.png' />
+          {open && (
+            <Typography variant='h5' pl={2}>
+              {'Admin Panel'}
+            </Typography>
+          )}
+        </Flex>
+        <Flex minHeight={'calc(100% - 200px)'} overflow={'auto'} mt={open ? 0 : 2}>
+          <SidebarList open={open} />
+        </Flex>
+        <FlexCenter minHeight={'130px'} p={4}>
+          <LogoutButton open={open} />
+        </FlexCenter>
+      </FlexColumn>
+    </DrawerContainer>
   );
 };
 
 export default Sidebar;
 
-const SidebarList = [
-  { id: '1', text: 'בית', icon: 'home', link: '/' },
-  { id: '2', text: 'מרכז שליטה', icon: 'dashboard', link: '/dashboard' },
-  { id: '3', text: 'יצירת מסמך', icon: 'addDoc', link: '/create' },
-  { id: '4', text: 'מסמכים אחרונים', icon: 'doc', link: '/recent' },
-  { id: '5', text: 'חיפוש מסמך', icon: 'searchDoc', link: '/search' },
-  { id: '6', text: 'אודות', icon: 'info', link: '/about' },
-];
+const DrawerContainer = styled(Drawer)<{ theme: Theme; drawerWidth: number }>(
+  ({ drawerWidth }) => ({
+    width: drawerWidth,
+
+    transition: theme.transitions.create(['width'], {
+      duration: theme.transitions.duration.standard,
+      easing: theme.transitions.easing.easeInOut,
+    }),
+
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+
+    '& .MuiDrawer-paper': {
+      width: drawerWidth,
+      position: 'fixed',
+      top: '20px',
+      left: '20px',
+      right: 0,
+      overflow: 'hidden',
+    },
+  })
+);

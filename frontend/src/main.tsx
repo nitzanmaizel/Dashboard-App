@@ -12,10 +12,10 @@ import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 
 import { UserProvider } from '@/context/UserContext';
+import { SnackbarProvider } from '@/context/SnackbarContext';
 
 import App from './App.tsx';
 import theme from '@/theme.tsx';
-import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -29,13 +29,15 @@ createRoot(document.getElementById('root')!).render(
     <Router>
       <QueryClientProvider client={queryClient}>
         <CacheProvider value={cacheRtl}>
-          <UserProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <App />
-              <ReactQueryDevtools initialIsOpen={false} />
-            </ThemeProvider>
-          </UserProvider>
+          <SnackbarProvider>
+            <UserProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <App />
+                <ReactQueryDevtools initialIsOpen={false} />
+              </ThemeProvider>
+            </UserProvider>
+          </SnackbarProvider>
         </CacheProvider>
       </QueryClientProvider>
     </Router>

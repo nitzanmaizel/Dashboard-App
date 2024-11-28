@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { IAdminUser } from '../types/AdminUserTypes';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 if (!JWT_SECRET) {
-  throw new Error('Missing required environment variable');
+  throw new Error('Missing required environment variable JWT_SECRET');
 }
 
 export function authenticateJWT(req: Request, res: Response, next: NextFunction): void {
@@ -38,10 +39,12 @@ export function authenticateJWT(req: Request, res: Response, next: NextFunction)
     req.user = {
       userId: decoded.userId,
       email: decoded.email,
-      name: decoded.name,
+      firstName: decoded.firstName,
+      lastName: decoded.lastName,
       picture: decoded.picture,
       role: decoded.role,
-    };
+      personalNumber: decoded.personalNumber,
+    } as IAdminUser;
 
     next();
   });
